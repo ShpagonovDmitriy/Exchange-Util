@@ -24,6 +24,7 @@ async def get_list_currencies(*currencies):
 
 async def convert_currencies(from_currency: str, to_currency: str, amount: float = 1.00) -> str:
     """Конвертация валют"""
+
     url = f'http://api.exchangerate.host/convert?from={from_currency.upper()}&to={to_currency.upper()}&ammount={amount}'
     async with ClientSession() as session:
         async with session.get(url=url) as response:
