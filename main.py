@@ -40,11 +40,11 @@ if __name__ == '__main__':
     #                                         args_history.start_date,
     #                                         args_history.end_date
     #                                        ))
-    try:
-        loop.run_until_complete(convert_currencies('usd', 'eur', 1))
-        loop.run_until_complete(get_list_currencies('usd'))
-        loop.run_until_complete(history_quotes('usd', 'eur', '20230101', '20230110'))
-    except RuntimeError:
-        print('OK')
-    finally:
-        loop.close()
+    # try:
+    loop.run_until_complete(convert_currencies('usd', 'eur', 1))
+    loop.run_until_complete(get_list_currencies('usd'))
+    loop.run_until_complete(history_quotes('usd', 'eur', '20230101', '20230110'))
+    # except RuntimeError:
+    #     print('OK')
+    # finally:
+        # loop.close()
