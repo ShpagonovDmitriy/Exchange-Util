@@ -1,25 +1,16 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from aiohttp import ClientSession
 
-async def get_list_currencies(*currencies):
-    """Получение списка валют. Выводятся валюты и их курс"""
+
+async def get_list_currencies():
+    """Получение списка валют"""
     url = f'http://api.exchangerate.host/latest'
-    
-    if currencies:
-        list_currencies = [i.upper() for i in currencies]
-    
-        async with ClientSession() as session:
-            async with session.get(url=url) as response:
-                result_json = await response.json()
-                for item in list_currencies:
-                    print(item, result_json["rates"][item])
-       
-    else:        
-        async with ClientSession() as session:
-            async with session.get(url=url) as response:
-                result_json = await response.json()
-                for keys, values in result_json["rates"].items():
-                    print(keys, values)
+
+    async with ClientSession() as session:
+        async with session.get(url=url) as response:
+            result_json = await response.json()
+            for keys, values in result_json["rates"].items():
+                print(keys)
 
 
 async def convert_currencies(from_currency: str, to_currency: str, amount: float = 1.00) -> str:
@@ -29,17 +20,19 @@ async def convert_currencies(from_currency: str, to_currency: str, amount: float
     async with ClientSession() as session:
         async with session.get(url=url) as response:
             result_json = await response.json()
-            print(f'{result_json["query"]["amount"]} {result_json["query"]["from"]} to {result_json["query"]["to"]} = {result_json["result"]} on date {result_json["date"]}')
+            amount = result_json["query"]["amount"] * amount
+            result = result_json["result"] * amount
+            print(f'{amount} {result_json["query"]["from"]} to {result_json["query"]["to"]} = {result} on date {result_json["date"]}')
 
 
-async def history_quotes(from_currency: str, to_currency: str, start_date, end_date):
+async def history_quotes(from_currency: str, to_currency: str, start_date):
     """История котировок"""
     start_date = datetime(year=int(start_date[0:4]), month=int(start_date[4:6]), day=int(start_date[6:8])).strftime("%Y-%m-%d")
-    end_date = datetime(year=int(end_date[0:4]), month=int(end_date[4:6]), day=int(end_date[6:8])).strftime("%Y-%m-%d")
+    end_date = datetime.today().strftime("%Y-%m-%d")
     start_date_dt = datetime.strptime(start_date, ("%Y-%m-%d"))
     end_date_dt = datetime.strptime(end_date, ("%Y-%m-%d"))
     
-    url = f'https://api.exchangerate.host/timeseries?start_date={start_date}&end_date={end_date}'
+    url = f'https://api.exchangerate.host/{start_date}'
 
     list_currencies = []
     from_currency = from_currency.upper()
@@ -50,9 +43,9 @@ async def history_quotes(from_currency: str, to_currency: str, start_date, end_d
     async with ClientSession() as session:
         async with session.get(url=url) as response:
             result_json = await response.json()
-            for keys in result_json["rates"][start_date].items():
+            for keys in result_json["rates"].items():
                 while start_date_dt <= end_date_dt:
                     start_date_str = start_date_dt.strftime("%Y-%m-%d")
                     for item in list_currencies:
-                        print(f'{start_date_dt} {item} {result_json["rates"][start_date_str][item]}')
+                        print(f'{start_date_dt} {item} {result_json["rates"][item]}')
                     start_date_dt += timedelta(days=1)

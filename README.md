@@ -1,5 +1,5 @@
 # Exchange Util
-
+Python 3.10
 
 
 ### Задача: Реализовать консольную утилиту для взаимодействия со сторонним сервисом https://exchangerate.host/#/#docs
@@ -10,7 +10,7 @@
 cmd symbols
 
 - Конвертация из одной валюты в другую
-cmd convert –from USD –to EUR 100
+cmd convert –from USD –to EUR 100 **_(for example: convert from USD to EUR 100)_**
 - История котировок за период
 cmd history –from USD –to EUR –data_from 20220101 –date_to 20220201 100
 Получение истории котировок параллельно с ограничением по количеству параллельных запросов.
